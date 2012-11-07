@@ -30,6 +30,7 @@
 #include "minzip/DirUtil.h"
 #include "roots.h"
 #include "recovery_ui.h"
+#include "ubitools/ubi_tools.h"
 
 #include "extendedcommands.h"
 #include "nandroid.h"
@@ -619,9 +620,9 @@ int confirm_selection(const char* title, const char* confirm)
     }
     }
 
-#define MKE2FS_BIN      "/sbin/mke2fs"
-#define TUNE2FS_BIN     "/sbin/tune2fs"
-#define E2FSCK_BIN      "/sbin/e2fsck"
++#define MKE2FS_BIN          "/sbin/mke2fs"
++#define TUNE2FS_BIN          "/sbin/tune2fs"
++#define E2FSCK_BIN          "/sbin/e2fsck"
 
 extern struct selabel_handle *sehandle;
 int format_device(const char *device, const char *path, const char *fs_type) {
@@ -744,6 +745,15 @@ int format_unknown_device(const char *device, const char* path, const char *fs_t
             }
             return format_ext2_device(device);
         }
+
+if (strcmp("ubifs", fs_type) == 0) {
+    LOGI("Formatting ubifs device.\n");
+    if (0 != ensure_path_unmounted(path)) {
+        LOGE("Error while unmounting %s.\n", path);
+        return -12;
+    }
+    return ubi_updatevol(device, NULL);
+}
     }
 
     if (0 != ensure_path_mounted(path))
