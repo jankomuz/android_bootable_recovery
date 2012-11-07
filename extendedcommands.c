@@ -620,9 +620,9 @@ int confirm_selection(const char* title, const char* confirm)
     }
     }
 
-+#define MKE2FS_BIN          "/sbin/mke2fs"
-+#define TUNE2FS_BIN          "/sbin/tune2fs"
-+#define E2FSCK_BIN          "/sbin/e2fsck"
+#define MKE2FS_BIN          "/sbin/mke2fs"
+#define TUNE2FS_BIN          "/sbin/tune2fs"
+#define E2FSCK_BIN          "/sbin/e2fsck"
 
 extern struct selabel_handle *sehandle;
 int format_device(const char *device, const char *path, const char *fs_type) {
