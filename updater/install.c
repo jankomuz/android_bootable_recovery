@@ -37,6 +37,7 @@
 #include "mtdutils/mtdutils.h"
 #include "updater.h"
 #include "applypatch/applypatch.h"
+#include "ubitools/ubi_tools.h"
 
 #ifdef USE_EXT4
 #include "make_ext4fs.h"
@@ -270,6 +271,15 @@ Value* FormatFn(const char* name, State* state, int argc, Expr* argv[]) {
             goto done;
         }
         result = location;
+} else if (strcmp(fs_type, "ubifs") == 0) {
+int status = ubi_updatevol(location, NULL);
+if (status != 0) {
+fprintf(stderr, "%s: ubi_updatevol failed (%d) on %s",
+name, status, location);
+result = strdup("");
+goto done;
+}
+result = location;
 #endif
     } else {
         fprintf(stderr, "%s: unsupported fs_type \"%s\" partition_type \"%s\"",
